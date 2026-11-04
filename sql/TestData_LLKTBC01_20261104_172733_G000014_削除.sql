@@ -4,7 +4,7 @@
 -- DBクライアントの自動コミットをOFFにして実行し、エラー時はROLLBACKしてください。
 -- 結果確認・削除SQLは複製元レコードを参照します。複製元を変更/削除する前に実行してください。
 -- 後片付け専用。複製区分と一緒に実行しないでください。自動コミットOFFで確認後COMMIT。
-DELETE FROM "GSS"."LLKTBC01" AS t WHERE EXISTS (SELECT 1 FROM (
+DELETE FROM "GSS"."LLKTBC01" t WHERE EXISTS (SELECT 1 FROM (
 SELECT
     s."C1DIST" AS "C1DIST",
     'LEY0038' AS "C1CLMNBR",
