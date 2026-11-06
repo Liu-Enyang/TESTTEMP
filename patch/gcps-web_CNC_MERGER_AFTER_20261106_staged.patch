@@ -1,0 +1,47 @@
+diff --git a/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/ScrutinyJudgment.vue b/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/ScrutinyJudgment.vue
+index 66ece462..3fb933db 100644
+--- a/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/ScrutinyJudgment.vue
++++ b/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/ScrutinyJudgment.vue
+@@ -57,6 +57,13 @@ const buttons = computed(() =>
+ const inputDisabled = computed(() =>
+   isInputDisabled(detail.value, claimStatus.value, props.readonly ?? false),
+ );
++const commentDisabled = computed(
++  () =>
++    inputDisabled.value &&
++    (claimStatus.value !== ClaimStatus.JUDGED ||
++      !buttons.value.rejudge.visible ||
++      buttons.value.rejudge.disabled),
++);
+ const currencyDigits = computed(() => detail.value?.currencyDigits ?? 0);
+ 
+ /** 精査／判定の表示用ラベルの強調（3.4：申請済＝精査、未判定＝判定を薄い紫にする。判定済は両方白） */
+@@ -282,6 +289,7 @@ const headerButtons: ScrutinyJudgmentButton[] = [
+       v-model:scrutiny-item="form.scrutinyItem"
+       :decision-item="detail.decisionItem"
+       :disabled="inputDisabled"
++      :comment-disabled="commentDisabled"
+       :field-errors="fieldErrors"
+       :options="detail.options"
+     />
+diff --git a/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/module/ScrutinyItemsPanel.vue b/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/module/ScrutinyItemsPanel.vue
+index fa2e8fa2..1194fdcc 100644
+--- a/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/module/ScrutinyItemsPanel.vue
++++ b/frontend/src/components/functional/ClaimProcessing/ReceivedClaimEntry/module/ScrutinyItemsPanel.vue
+@@ -16,6 +16,7 @@ const props = defineProps<{
+   options: ScrutinyJudgmentOptions;
+   decisionItem: DecisionItem;
+   disabled: boolean;
++  commentDisabled: boolean;
+   /** 入力項目の下に表示するエラー（キー：interimDecision / reasons / accountCode） */
+   fieldErrors?: Record<string, string>;
+ }>();
+@@ -184,7 +185,7 @@ const commentRules = [
+                 v-model="comment"
+                 color="primary"
+                 counter="50"
+-                :disabled="disabled"
++                :disabled="commentDisabled"
+                 rows="2"
+                 :rules="commentRules"
+                 variant="outlined"
